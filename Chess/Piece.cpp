@@ -4,6 +4,7 @@ Piece::Piece()
 	
 {
 	m_hasMoved = false;
+	m_isAlive = true;
 }
 
 
@@ -46,3 +47,14 @@ void Piece::DrawPiece()
 {
 	cout << m_identity;
 }
+
+bool Piece::GetIsAlive()
+{
+	return m_isAlive;
+}
+
+void Piece::SetEaten()
+{
+	m_isAlive = false;
+}
+

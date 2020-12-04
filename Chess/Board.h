@@ -15,10 +15,10 @@ constexpr int kRightBishopStartPos = 5;
 constexpr int kQueenStartPos = 3;
 constexpr int kKingStartPos = 4;
 
-constexpr int kWhitePieceRow = 0;
-constexpr int kWhitePawnRow = 1;
-constexpr int kBlackPieceRow = 7;
-constexpr int kBlackPawnRow = 6;
+constexpr int kBlackPieceRow = 0;
+constexpr int kBlackPawnRow = 1;
+constexpr int kWhitePieceRow = 7;
+constexpr int kWhitePawnRow = 6;
 
 const char emptytile = ' ';
 
@@ -45,6 +45,8 @@ public:
 	bool CheckGetPieceValid(bool currentplayer, string location);
 	string GetTileIdentity(string location);
 
+	string* GetTilePointer(string location);
+	Player* GetPlayer(string identity);
 
 	void SetUpBoard();
 	void PawnRow(char colour, int row);
@@ -57,21 +59,9 @@ public:
 	bool isBlack(string location);
 
 
-	void SetPawn(string identity, string location);
-	void SetKnight(string identity, string location);
-	void SetBishop(string identity, string location);
-	void SetRook(string identity, string location);
-	void SetQueen(string identity, string location);
-	void SetKing(string identity, string location);
-
-	bool CanPieceMove(bool isWhite, string startpos, string endpos);
-	void MovePiece(bool isWhite, string startpos, string endpos);
+	bool CanPieceMove(string startpos, string endpos);
+	void MovePiece(string startpos, string endpos);
 
 	bool CheckPossible(vector<string> moves, string endpos);
 	bool CheckClearPath(vector<string> moves, string endpos);
-
-
-	//write a getTileIdentity function
-	//can you not just have all the different piece positions as pointers
-	//can I write a function that takes a string and returns boardarray[x][y]
 };

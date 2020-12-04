@@ -51,7 +51,7 @@ vector<string> Queen::PossibleMoves(bool hasmoved, string finalpos)
 	}
 
 	//Down Right
-	else if (direction == "Down Right")
+	else if (direction == "DownRight")
 	{
 		for (startX; startX <= finalX; startX++)
 		{

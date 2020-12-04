@@ -65,9 +65,12 @@ vector<string> Bishop::PossibleMoves(bool hasmoved, string finalpos)
 
 		return moves;
 	}
-	else
+	//else
 	{
 		//error error error
+		//don't know why this crashes
 		cout << "impossible" << endl;
+		moves.push_back("No");
+		return moves;
 	}
 }

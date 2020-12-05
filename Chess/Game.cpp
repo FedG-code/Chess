@@ -4,7 +4,7 @@ using namespace std;
 
 Game::Game()
 {
-	bool currentPlayer = White;
+
 }
 
 void Game::SetUpGame()

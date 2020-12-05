@@ -39,3 +39,23 @@ vector<string> Pawn::PossibleMoves(bool hasmoved, string finalpos)
 		return moves;
 	}
 }
+
+bool Pawn::PossibleMoves(vector<string>& possiblemoves, bool hasmoved, string finalpos)
+{
+	return false;
+}
+
+//bool Pawn::CheckMoveAllowed(string endpos)
+//{
+//	vector<string> moves = PossibleMoves(GetHasMoved(), endpos);
+//
+//	for (int i = 0; i < moves.size(); i++)
+//	{
+//		if (moves[i] == endpos)
+//		{
+//			return true;
+//		}
+//	}
+//
+//	return false;
+//}

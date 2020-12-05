@@ -9,7 +9,7 @@ class Game
 
 	Board ChessBoard{};
 	bool isGameOver = false;
-	bool currentPlayer;
+	bool currentPlayer = White;
 
 public:
 

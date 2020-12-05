@@ -56,3 +56,8 @@ vector<string> Rook::PossibleMoves(bool hasmoved, string finalpos)
 		return moves;
 	}
 }
+
+bool Rook::PossibleMoves(vector<string>& possiblemoves, bool hasmoved, string finalpos)
+{
+	return false;
+}

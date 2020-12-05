@@ -292,7 +292,13 @@ bool Board::CanPieceMove(string startpos, string endpos)
 	if (piece)
 	{
 		bool hasmoved = piece->GetHasMoved();
-		vector<string> moves = piece->PossibleMoves(hasmoved, endpos);
+		vector<string> moves; 
+		bool isMovePossible= piece->PossibleMoves(moves, hasmoved, endpos);
+
+		if (!isMovePossible)
+		{
+			return false;
+		}
 		//check possible should be moved to inside the different piece classes so it can account for stuff like pawns
 		bool possible = CheckPossible(moves, endpos);
 		bool clearpath = true;

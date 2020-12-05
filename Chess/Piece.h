@@ -14,6 +14,8 @@ public:
 	Position pos;
 	Piece();
 	virtual vector<string> PossibleMoves(bool hasmoved, string finalpos) = 0;
+	virtual bool PossibleMoves(vector<string> &possiblemoves, bool hasmoved, string finalpos) = 0;
+	//virtual bool CheckMoveAllowed(string endpos) = 0;
 
 	string GetIdentity();
 	void SetIdentity(string name);

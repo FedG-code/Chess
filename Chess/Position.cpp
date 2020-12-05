@@ -56,7 +56,7 @@ string Position::CompareNotation(string finalpos)
 	{
 		return "UpLeft";
 	}
-
+		return "No";
 }
 
 string Position::isUpOrDown(string finalpos)

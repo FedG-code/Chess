@@ -50,49 +50,55 @@ void Game::GameLoop()
 
 void Game::PlayTurn()
 {
-	cout << "Please enter the location of the piece you want to move: ";
 
 	//to make a move choose the piece you want to move and it's end destination
 
 	//check validity of chosen square first and then of destination
 	string pieceSelectionAttempt;
 
-	cin >> pieceSelectionAttempt;
-
-	//string pieceIdentity = ChessBoard.GetTileIdentity(pieceSelectionAttempt);
-	bool pieceSelectionSucess = ChessBoard.CheckGetPieceValid(currentPlayer, pieceSelectionAttempt);
-
-	while (!pieceSelectionSucess)
-	{
-		cout << "That is not a piece you can move, try again: ";
-		cin >> pieceSelectionAttempt;
-		pieceSelectionSucess = ChessBoard.CheckGetPieceValid(currentPlayer, pieceSelectionAttempt);
-	}
-
-	//should return the type of piece it is (for debugging the whole string) and highlight it
-	if (pieceSelectionSucess)
-	{
-		cout << ChessBoard.GetTileIdentity(pieceSelectionAttempt) << endl;
-	}
-
-	cout << "Please enter the location you want to move that piece to: ";
-
 	string pieceMoveAttempt;
 
-	cin >> pieceMoveAttempt;
-
-	bool pieceMoveSuccess;
-
-	pieceMoveSuccess = ChessBoard.CanPieceMove(currentPlayer, pieceSelectionAttempt, pieceMoveAttempt);
-
-	while (!pieceMoveSuccess)
+	do
 	{
-		cout << "You cannot move the selected piece to that square, try again: ";
+		cout << "Please enter the tile of the piece you want to move: ";
+
+		cin >> pieceSelectionAttempt;
+
+
+		//string pieceIdentity = ChessBoard.GetTileIdentity(pieceSelectionAttempt);
+		bool pieceSelectionSucess = ChessBoard.CheckGetPieceValid(currentPlayer, pieceSelectionAttempt);
+
+		while (!pieceSelectionSucess)
+		{
+			cout << "That is not a piece you can move, try again: ";
+			cin >> pieceSelectionAttempt;
+			pieceSelectionSucess = ChessBoard.CheckGetPieceValid(currentPlayer, pieceSelectionAttempt);
+		}
+
+		//should return the type of piece it is (for debugging the whole string) and highlight it
+
+		cout << *ChessBoard.GetTilePointer(pieceSelectionAttempt) << endl;
+
+
+		cout << "Please enter the tile you want to move to, or back to change piece: ";
+
 		cin >> pieceMoveAttempt;
 
-		pieceMoveSuccess = ChessBoard.CanPieceMove(currentPlayer, pieceSelectionAttempt, pieceMoveAttempt);
 
-	}
+		bool pieceMoveSuccess;
 
-	ChessBoard.MovePiece(currentPlayer, pieceSelectionAttempt, pieceMoveAttempt);
+		pieceMoveSuccess = ChessBoard.CanPieceMove(pieceSelectionAttempt, pieceMoveAttempt);
+
+		while (!pieceMoveSuccess)
+		{
+			cout << "You cannot move the selected piece to that square." << endl;
+			cout << "Please select a legal square or write back to pick a new piece: ";
+			cin >> pieceMoveAttempt;
+
+			pieceMoveSuccess = ChessBoard.CanPieceMove(pieceSelectionAttempt, pieceMoveAttempt);
+		}
+
+	} while (pieceMoveAttempt == "back");
+
+	ChessBoard.MovePiece(pieceSelectionAttempt, pieceMoveAttempt);
 }

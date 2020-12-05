@@ -95,3 +95,8 @@ vector<string> Knight::PossibleMoves(bool hasmoved, string finalpos)
 
 	return moves;
 }
+
+bool Knight::PossibleMoves(vector<string>& possiblemoves, bool hasmoved, string finalpos)
+{
+	return false;
+}

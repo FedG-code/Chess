@@ -1,4 +1,4 @@
-﻿  Board.cpp
-  Chess.cpp
-  Generating Code...
+﻿  Position.cpp
+C:\Users\feder\source\repos\Chess\Chess\Position.cpp(64): warning C4715: 'Position::CompareNotation': not all control paths return a value
+C:\Users\feder\source\repos\Chess\Chess\Position.cpp(245): warning C4715: 'Position::Bump': not all control paths return a value
   Chess.vcxproj -> C:\Users\feder\source\repos\Chess\x64\Debug\Chess.exe

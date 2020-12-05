@@ -12,6 +12,7 @@ static const int PieceArrayNum = 2;
 class Player
 {
 	char m_PlayerColour;
+	vector<string> EatenPieces;
 
 public:
 	Pawn Pawns[PawnNum];
@@ -33,6 +34,7 @@ public:
 
 	Piece* GetPiece(string pieceName);
 
+	void EatPiece(Piece* piece);
 	//string WhichPieceAtLocation(string location);
 
 

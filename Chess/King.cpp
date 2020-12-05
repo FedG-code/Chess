@@ -50,3 +50,8 @@ vector<string> King::PossibleMoves(bool hasmoved, string finalpos)
 
 	return moves;
 }
+
+bool King::PossibleMoves(vector<string>& possiblemoves, bool hasmoved, string finalpos)
+{
+	return false;
+}

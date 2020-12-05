@@ -10,7 +10,7 @@ Board::Board()
    
 void Board::DrawTile(string location)
 {
-	string currentTile = GetTileIdentity(location);
+	string currentTile = *GetTilePointer(location);
 	
 	if (currentTile != " ")
 	{
@@ -52,7 +52,7 @@ void Board::DrawBoard()
 				DrawTile(notation);
 			}
 		}
-		cout << " " << i+1 << endl;
+		cout << " " << abs(7-i)+1 << endl;
 
 		SetConsoleTextAttribute(console, kRegularColour);
 
@@ -71,32 +71,28 @@ void Board::SetTile(string identity, string location)
 
 void Board::SetPiece(string identity, string location)
 {
-	char colour = identity[0];
-	if (colour == white)
-	{
-		Piece* piece = WhitePlayer.GetPiece(identity);
-		piece->pos.SetPosition(location);
-		SetTile(identity, location);
-		return;
-	}
-	else if (colour == black)
-	{
-		Piece* piece = BlackPlayer.GetPiece(identity);
-		piece->pos.SetPosition(location);
-		SetTile(identity, location);
-		return;
-	}
-	else
-	{
-		cout << "colour error when trying to read the identity of a piece" << endl;
-	}
+	Player* currentPlayer = GetPlayer(identity);
+	Piece* piece = currentPlayer->GetPiece(identity);
+	piece->pos.SetPosition(location);
+	SetTile(identity, location);
+	return;
+
 }
 
 bool Board::CheckGetPieceValid(bool currentplayer, string location)
 {
 	//check to see if there is a piece at the location and whether it belongs to the player
 
-	string identity = GetTileIdentity(location);
+	string identity = *GetTilePointer(location);
+	Player* selectedTilePlayer = GetPlayer(identity);
+	Piece* piece = selectedTilePlayer->GetPiece(identity);
+	bool isAlive = piece->GetIsAlive();
+
+	if (!isAlive)
+	{
+		cout << "that piece has been eaten, how'd you even select it?" << endl;
+		return false;
+	}
 
 	if (identity == " ")
 	{
@@ -130,6 +126,36 @@ string Board::GetTileIdentity(string location)
 	return BoardArray[startX][startY];
 }
 
+string* Board::GetTilePointer(string location)
+{
+	int startX = TranslateXFromNotation(location[0]);
+	int startY = TranslateYFromNotation(location[1]);
+
+	return &BoardArray[startX][startY];
+}
+
+Player* Board::GetPlayer(string identity)
+{
+	char colour = identity[0];
+	if (colour == black)
+	{
+		return &BlackPlayer;
+	}
+	else if (colour == white)
+	{
+		return &WhitePlayer;
+	}
+	else if (identity == " ")
+	{
+		cout << "No player owns the empty square" << endl;
+		return nullptr;
+	}
+	else
+	{
+		cout << "Invalid symbol input in GetPlayer" << endl;
+		return nullptr;
+	}
+}
 
 void Board::SetUpBoard()
 {
@@ -220,10 +246,7 @@ void Board::EmptyBoard()
 
 bool Board::isBlack(string location)
 {
-	int x = TranslateXFromNotation(location[0]);
-	int y = TranslateYFromNotation(location[1]);
-
-	string currentTile = BoardArray[x][y];
+	string currentTile = *GetTilePointer(location);
 	char colour = currentTile[0];
 	if (colour == black)
 	{
@@ -237,10 +260,7 @@ bool Board::isBlack(string location)
 
 bool Board::isWhite(string location)
 {
-	int x = TranslateXFromNotation(location[0]);
-	int y = TranslateYFromNotation(location[1]);
-
-	string currentTile = BoardArray[x][y];
+	string currentTile = *GetTilePointer(location);
 	char colour = currentTile[0];
 	if (colour == white)
 	{
@@ -252,113 +272,93 @@ bool Board::isWhite(string location)
 	}
 }
 
-bool Board::CanPieceMove(bool isWhite, string startpos, string endpos)
+
+bool Board::CanPieceMove(string startpos, string endpos)
 {
-	string identity = GetTileIdentity(startpos);
-
-	if (isWhite)
+	//bit of a cheat here but because CanPieceMove is at the end of a do while loop
+	//it means that it can afford to do something as incorrect as returning true
+	//to what would be a meaningless string as the entire while loop repeats right after
+	if (endpos == "back")
 	{
-		Piece* piece = WhitePlayer.GetPiece(identity);
-		if (piece)
+		return true;
+	}
+	
+	//we don't actually need to pass a bool into CanPieceMove because this function
+	//is only called after we've confirmed the piece belongs to the player
+	string identity = *GetTilePointer(startpos);
+	Player* currentPlayer = GetPlayer(identity);
+	Piece* piece = currentPlayer->GetPiece(identity);
+
+	if (piece)
+	{
+		bool hasmoved = piece->GetHasMoved();
+		vector<string> moves; 
+		bool isMovePossible= piece->PossibleMoves(moves, hasmoved, endpos);
+
+		if (!isMovePossible)
 		{
-			bool hasmoved = piece->GetHasMoved();
-			vector<string> moves = piece->PossibleMoves(hasmoved, endpos);
-			bool possible = CheckPossible(moves, endpos);
-			bool clearpath = true;
-
-			if (identity[1] != knight)
-			{
-				clearpath = CheckClearPath(moves, endpos);
-			}
-
-			if (!possible)
-			{
-				cout << "The piece you selected can't move there" << endl;
-				return false;
-			}
-			else if (possible && !clearpath)
-			{
-				cout << "There's a piece in the way!" << endl;
-				return false;
-			}
-			else if (possible && clearpath)
-			{
-				return true;
-			}
-			
+			return false;
 		}
+		//check possible should be moved to inside the different piece classes so it can account for stuff like pawns
+		bool possible = CheckPossible(moves, endpos);
+		bool clearpath = true;
+
+		if (identity[1] != knight)
+		{
+			clearpath = CheckClearPath(moves, endpos);
+		}
+		if (!possible)
+		{
+			cout << "The piece you selected can't move there" << endl;
+			return false;
+		}
+		else if (possible && !clearpath)
+		{
+			cout << "There's a piece in the way!" << endl;
+			return false;
+		}
+		else if (possible && clearpath)
+		{
+			return true;
+		}
+		
 	}
 	else
 	{
-
-		Piece* piece = BlackPlayer.GetPiece(identity);
-		if (piece)
-		{
-			bool hasmoved = piece->GetHasMoved();
-			vector<string> moves = piece->PossibleMoves(hasmoved, endpos);
-			bool possible = CheckPossible(moves, endpos);
-			bool clearpath = true;
-
-			if (identity[1] != knight)
-			{
-				clearpath = CheckClearPath(moves, endpos);
-			}
-
-			if (!possible)
-			{
-				cout << "The piece you selected can't move there" << endl;
-				return false;
-			}
-			else if (possible && !clearpath)
-			{
-				cout << "There's a piece in the way!" << endl;
-				return false;
-			}
-			else if (possible && clearpath)
-			{
-				return true;
-			}
-		}
+		return false;
 	}
-	return false;
 }
 
-void Board::MovePiece(bool isWhite, string startpos, string endpos)
+void Board::MovePiece(string startpos, string endpos)
 {
-	string identity = GetTileIdentity(startpos);
+	string startIdentity = *GetTilePointer(startpos);
+	string endIdentity = *GetTilePointer(endpos);
+	
+	Player* startPlayer = GetPlayer(startIdentity);
+	Piece* startPiece = startPlayer->GetPiece(startIdentity);
+	
 
-	if (isWhite)
+	
+	if (endIdentity != " ")
 	{
-		Piece* piece = WhitePlayer.GetPiece(identity);
-
-		piece->pos.SetPosition(endpos);
-		if (piece->GetHasMoved() == false)
-		{
-			piece->HasIndeedMoved();
-		}
-		SetTile(identity, endpos);
-		ClearTile(startpos);
-		return;
+		Player* endPlayer = GetPlayer(endIdentity);
+		Piece* endPiece = endPlayer->GetPiece(endIdentity);
+		startPlayer->EatPiece(endPiece);
 	}
-	else
+
+	startPiece->pos.SetPosition(endpos);
+	if (startPiece->GetHasMoved() == false)
 	{
-		Piece* piece = BlackPlayer.GetPiece(identity);
-
-		piece->pos.SetPosition(endpos);
-		if (piece->GetHasMoved() == false)
-		{
-			piece->HasIndeedMoved();
-		}
-		SetTile(identity, endpos);
-		ClearTile(startpos);
-		return;
+		startPiece->HasIndeedMoved();
 	}
+	SetTile(startIdentity, endpos);
+	ClearTile(startpos);
+	return;
 }
 
 
 
 bool Board::CheckPossible(vector<string> moves, string endpos)
-
 {
 	for (int i = 0; i < moves.size(); i++)
 	{

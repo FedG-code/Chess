@@ -284,68 +284,10 @@ Piece* Player::GetPiece(string pieceName)
 }
 
 
-//string Player::WhichPieceAtLocation(string location)
-//{
-//	//check if a pawn is at location
-//	for (int i = 0; i < PawnNum; i++)
-//	{
-//		string pawnlocation = Pawns[i].pos.GetCoordinatesNotation();
-//		string whoamI = "p";
-//		whoamI.push_back(i);
-//		if (pawnlocation == location)
-//		{
-//			return whoamI;
-//		}
-//	}
-//
-//	//check knights
-//	for (int i = 0; i < PieceArrayNum; i++)
-//	{
-//		string knightlocation = Knights[i].pos.GetCoordinatesNotation();
-//		string whoamI = "k";
-//		whoamI.push_back(i);
-//		if (knightlocation == location)
-//		{
-//			return whoamI;
-//		}
-//	}
-//
-//	//check bishops
-//	for (int i = 0; i < PieceArrayNum; i++)
-//	{
-//		string bishoplocation = Bishops[i].pos.GetCoordinatesNotation();
-//		string whoamI = "b";
-//		whoamI.push_back(i);
-//		if (bishoplocation == location)
-//		{
-//			return whoamI;
-//		}
-//	}
-//
-//	//check rooks
-//
-//	for (int i = 0; i < PieceArrayNum; i++)
-//	{
-//		string rooklocation = Rooks[i].pos.GetCoordinatesNotation();
-//		string whoamI = "r";
-//		whoamI.push_back(i);
-//		if (rooklocation == location)
-//		{
-//			return whoamI;
-//		}
-//	}
-//
-//	//check Queen
-//
-//	string queenlocation = Queen.pos.GetCoordinatesNotation();
-//	if (queenlocation == location)
-//	{
-//		return "q";
-//	}
-//
-//	string kinglocation = King.pos.GetCoordinatesNotation();
-//	if (kinglocation == location)
-//	{
-//		return "K";
-//	}
-//}
+void Player::EatPiece(Piece* piece)
+{
+	string identity = piece->GetIdentity();
+	piece->SetEaten();
+	EatenPieces.push_back(identity);
+	piece->SetIdentity(" ");
+}

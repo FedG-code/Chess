@@ -1,6 +1,6 @@
 #include "Rook.h"
 
-vector<string> Rook::PossibleMoves(bool hasmoved, string finalpos)
+vector<string> Rook::PossibleMoves(string finalpos)
 {
 	string startpos = pos.GetCoordinatesNotation();
 	string direction = pos.CompareNotation(finalpos);
@@ -57,7 +57,17 @@ vector<string> Rook::PossibleMoves(bool hasmoved, string finalpos)
 	}
 }
 
-bool Rook::PossibleMoves(vector<string>& possiblemoves, bool hasmoved, string finalpos)
+bool Rook::CheckMoveAllowed(string endpos)
 {
+	vector<string> moves = PossibleMoves(endpos);
+
+	for (int i = 0; i < moves.size(); i++)
+	{
+		if (moves[i] == endpos)
+		{
+			return true;
+		}
+	}
+
 	return false;
 }

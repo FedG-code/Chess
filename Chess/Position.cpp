@@ -99,12 +99,14 @@ bool Position::isUpRight(string finalpos)
 	}
 	else
 	{
-		for (startX; startX <= finalX; startX++, startY++)
+		while(startX <= finalX && startY <= finalY)
 		{
 			if (startX == finalX && startY == finalY)
 			{
 				return true;
 			}
+			startX++;
+			startY++;
 		}
 	}
 
@@ -124,12 +126,14 @@ bool Position::isDownRight(string finalpos)
 	}
 	else
 	{
-		for (startX; startX <= finalX; startX++, startY--)
+		while (startX <= finalX && startY >= finalY)
 		{
 			if (startX == finalX && startY == finalY)
 			{
 				return true;
 			}
+			startX++;
+			startY--;
 		}
 	}
 
@@ -149,12 +153,14 @@ bool Position::isDownLeft(string finalpos)
 	}
 	else
 	{
-		for (startX; startX >= finalX; startX--, startY--)
+		while (startX >= finalX && startY >= finalY)
 		{
 			if (startX == finalX && startY == finalY)
 			{
 				return true;
 			}
+			startX--;
+			startY--;
 		}
 	}
 
@@ -201,12 +207,14 @@ bool Position::isUpLeft(string finalpos)
 	}
 	else
 	{
-		for (startX; startX <= finalX; startX++, startY++)
+		while (startX >= finalX && startY <= finalY)
 		{
 			if (startX == finalX && startY == finalY)
 			{
 				return true;
 			}
+			startX--;
+			startY++;
 		}
 	}
 
@@ -255,7 +263,7 @@ bool Position::BumpYUp()
 	}
 	else
 	{
-		cout << "you're exceeding the array limit son" << endl;
+		//cout << "you're exceeding the array limit son" << endl;
 		return false;
 	}
 }
@@ -274,7 +282,7 @@ bool Position::BumpXUp()
 	}
 	else
 	{
-		cout << "you're exceeding the array limit son" << endl;
+		//cout << "you're exceeding the array limit son" << endl;
 		return false;
 	}
 }
@@ -294,7 +302,7 @@ bool Position::BumpYDown()
 	}
 	else
 	{
-		cout << "you're exceeding the array limit son" << endl;
+		//cout << "you're exceeding the array limit son" << endl;
 		return false;
 	}
 }
@@ -313,7 +321,7 @@ bool Position::BumpXDown()
 	}
 	else
 	{
-		cout << "you're exceeding the array limit son" << endl;
+		//cout << "you're exceeding the array limit son" << endl;
 		return false;
 	}
 }

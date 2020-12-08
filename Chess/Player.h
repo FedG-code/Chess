@@ -12,7 +12,7 @@ static const int PieceArrayNum = 2;
 class Player
 {
 	char m_PlayerColour;
-	vector<string> EatenPieces;
+	vector<string> m_EatenPieces;
 
 public:
 	Pawn Pawns[PawnNum];
@@ -27,14 +27,15 @@ public:
 	void SetPlayerColour(char colour);
 	void TeamSetup();
 
-	int WhichPawnAtLocation(string location);
-	int WhichKnightAtLocation(string location);
-	int WhichBishopAtLocation(string location);
-	int WhichRookAtLocation(string location);
+	//int WhichPawnAtLocation(string location);
+	//int WhichKnightAtLocation(string location);
+	//int WhichBishopAtLocation(string location);
+	//int WhichRookAtLocation(string location);
 
 	Piece* GetPiece(string pieceName);
 
 	void EatPiece(Piece* piece);
+	vector<string> ReturnEatenPieces();
 	//string WhichPieceAtLocation(string location);
 
 

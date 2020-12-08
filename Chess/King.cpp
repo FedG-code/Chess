@@ -1,57 +1,95 @@
 #include "King.h"
 
-vector<string> King::PossibleMoves(bool hasmoved, string finalpos)
+vector<string> King::PossibleMoves(string finalpos)
 {
+	bool UP;
+	bool DOWN;
+	bool RIGHT;
+	bool LEFT;
 	vector<string> moves;
 	string startpos = pos.GetCoordinatesNotation();
 	//Up
-	pos.Bump(Up);
-	moves.push_back(pos.GetCoordinatesNotation());
+	UP = pos.Bump(Up);
+	if (UP)
+	{
+		moves.push_back(pos.GetCoordinatesNotation());
+	}
 	pos.SetPosition(startpos);
 	
 	//Up right
-	pos.Bump(Up);
-	pos.Bump(Right);
-	moves.push_back(pos.GetCoordinatesNotation());
+
+	UP = pos.Bump(Up);
+	RIGHT = pos.Bump(Right);
+	if (UP && RIGHT)
+	{
+		moves.push_back(pos.GetCoordinatesNotation());
+	}
 	pos.SetPosition(startpos);
 
 	//Right
-	pos.Bump(Right);
-	moves.push_back(pos.GetCoordinatesNotation());
+	RIGHT = pos.Bump(Right);
+	{
+		moves.push_back(pos.GetCoordinatesNotation());
+	}
 	pos.SetPosition(startpos);
 	
 	//Bottom right
-	pos.Bump(Down);
-	pos.Bump(Right);
-	moves.push_back(pos.GetCoordinatesNotation());
+	DOWN = pos.Bump(Down);
+	RIGHT = pos.Bump(Right);
+	if (DOWN && RIGHT)
+	{
+		moves.push_back(pos.GetCoordinatesNotation());
+	}
 	pos.SetPosition(startpos);
 
 	//Down
-	pos.Bump(Down);
-	moves.push_back(pos.GetCoordinatesNotation());
+	DOWN = pos.Bump(Down);
+	if (DOWN)
+	{
+		moves.push_back(pos.GetCoordinatesNotation());
+	}
 	pos.SetPosition(startpos);
 
 	//Down left
-	pos.Bump(Down);
-	pos.Bump(Left);
-	moves.push_back(pos.GetCoordinatesNotation());
+	DOWN = pos.Bump(Down);
+	LEFT = pos.Bump(Left);
+	if (DOWN && LEFT)
+	{
+		moves.push_back(pos.GetCoordinatesNotation());
+	}
 	pos.SetPosition(startpos);
 
 	//Left
-	pos.Bump(Left);
-	moves.push_back(pos.GetCoordinatesNotation());
+	LEFT = pos.Bump(Left);
+	if (LEFT)
+	{
+		moves.push_back(pos.GetCoordinatesNotation());
+	}
 	pos.SetPosition(startpos);
 
 	//Up left
-	pos.Bump(Up);
-	pos.Bump(Left);
-	moves.push_back(pos.GetCoordinatesNotation());
+	UP = pos.Bump(Up);
+	LEFT = pos.Bump(Left);
+	if(UP && LEFT)
+	{
+		moves.push_back(pos.GetCoordinatesNotation());
+	}
 	pos.SetPosition(startpos);
 
 	return moves;
 }
 
-bool King::PossibleMoves(vector<string>& possiblemoves, bool hasmoved, string finalpos)
+bool King::CheckMoveAllowed(string endpos)
 {
+	vector<string> moves = PossibleMoves(endpos);
+
+	for (int i = 0; i < moves.size(); i++)
+	{
+		if (moves[i] == endpos)
+		{
+			return true;
+		}
+	}
+
 	return false;
 }

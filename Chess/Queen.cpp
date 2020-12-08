@@ -1,7 +1,7 @@
 #include "Queen.h"
 #include <iostream>
 
-vector<string> Queen::PossibleMoves(bool hasmoved, string finalpos)
+vector<string> Queen::PossibleMoves(string finalpos)
 {
 	string startpos = pos.GetCoordinatesNotation();
 	string direction = pos.CompareNotation(finalpos);
@@ -117,7 +117,17 @@ vector<string> Queen::PossibleMoves(bool hasmoved, string finalpos)
 	}
 }
 
-bool Queen::PossibleMoves(vector<string>& possiblemoves, bool hasmoved, string finalpos)
+bool Queen::CheckMoveAllowed(string endpos)
 {
+	vector<string> moves = PossibleMoves(endpos);
+
+	for (int i = 0; i < moves.size(); i++)
+	{
+		if (moves[i] == endpos)
+		{
+			return true;
+		}
+	}
+
 	return false;
 }

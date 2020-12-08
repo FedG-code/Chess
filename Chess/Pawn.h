@@ -4,9 +4,18 @@
 using namespace std;
 class  Pawn : public Piece
 {
-	bool enPassant;
+	bool m_enPassant{false};
+	bool m_blocked1{false};
+	bool m_blocked2{false};
+	bool m_canEatLaterally{false};
 public:
-	vector<string> PossibleMoves(bool hasmoved, string finalpos) override;
-	bool PossibleMoves(vector<string>& possiblemoves, bool hasmoved, string finalpos) override;
-	//bool CheckMoveAllowed(string endpos) override;
+	
+	Pawn();
+
+	vector<string> PossibleMoves(string finalpos) override;
+	bool CheckMoveAllowed(string endpos) override;
+
+	void SetBlocked1(bool set);
+	void SetBlocked2(bool set);
+	void SetCanEatLaterally(bool set);
 };

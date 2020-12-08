@@ -17,4 +17,5 @@ public:
 	void SetUpGame();
 	void GameLoop();
 	void PlayTurn();
+	void GameOver(bool currentPlayer);
 };

@@ -91,56 +91,56 @@ void Player::TeamSetup()
 
 //these helper functions are almost certainly useless after my switch to a string board
 
-int Player::WhichPawnAtLocation(string location)
-{
-	for (int i = 0; i < PawnNum; i++)
-	{
-		string pawnlocation = Pawns[i].pos.GetCoordinatesNotation();
-
-		if (pawnlocation == location)
-		{
-			return i;
-		}
-	}
-}
-
-int Player::WhichKnightAtLocation(string location)
-{
-	for (int i = 0; i < PieceArrayNum; i++)
-	{
-		string knightlocation = Knights[i].pos.GetCoordinatesNotation();
-
-		if (knightlocation == location)
-		{
-			return i;
-		}
-	}
-}
-
-int Player::WhichBishopAtLocation(string location)
-{
-	for (int i = 0; i < PieceArrayNum; i++)
-	{
-		string bishoplocation = Bishops[i].pos.GetCoordinatesNotation();
-
-		if (bishoplocation == location)
-		{
-			return i;
-		}
-	}
-}
-
-int Player::WhichRookAtLocation(string location)
-{
-	for (int i = 0; i < PieceArrayNum; i++)
-	{
-		string rooklocation = Rooks[i].pos.GetCoordinatesNotation();
-		if (rooklocation == location)
-		{
-			return i;
-		}
-	}
-}
+//int Player::WhichPawnAtLocation(string location)
+//{
+//	for (int i = 0; i < PawnNum; i++)
+//	{
+//		string pawnlocation = Pawns[i].pos.GetCoordinatesNotation();
+//
+//		if (pawnlocation == location)
+//		{
+//			return i;
+//		}
+//	}
+//}
+//
+//int Player::WhichKnightAtLocation(string location)
+//{
+//	for (int i = 0; i < PieceArrayNum; i++)
+//	{
+//		string knightlocation = Knights[i].pos.GetCoordinatesNotation();
+//
+//		if (knightlocation == location)
+//		{
+//			return i;
+//		}
+//	}
+//}
+//
+//int Player::WhichBishopAtLocation(string location)
+//{
+//	for (int i = 0; i < PieceArrayNum; i++)
+//	{
+//		string bishoplocation = Bishops[i].pos.GetCoordinatesNotation();
+//
+//		if (bishoplocation == location)
+//		{
+//			return i;
+//		}
+//	}
+//}
+//
+//int Player::WhichRookAtLocation(string location)
+//{
+//	for (int i = 0; i < PieceArrayNum; i++)
+//	{
+//		string rooklocation = Rooks[i].pos.GetCoordinatesNotation();
+//		if (rooklocation == location)
+//		{
+//			return i;
+//		}
+//	}
+//}
 
 
 Piece* Player::GetPiece(string pieceName)
@@ -288,6 +288,11 @@ void Player::EatPiece(Piece* piece)
 {
 	string identity = piece->GetIdentity();
 	piece->SetEaten();
-	EatenPieces.push_back(identity);
+	m_EatenPieces.push_back(identity);
 	piece->SetIdentity(" ");
+}
+
+vector<string> Player::ReturnEatenPieces()
+{
+	return m_EatenPieces;
 }

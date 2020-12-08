@@ -1,6 +1,6 @@
 #include "Knight.h"
 
-vector<string> Knight::PossibleMoves(bool hasmoved, string finalpos)
+vector<string> Knight::PossibleMoves(string finalpos)
 {
 	vector<string> moves;
 	string startpos = pos.GetCoordinatesNotation();
@@ -96,7 +96,17 @@ vector<string> Knight::PossibleMoves(bool hasmoved, string finalpos)
 	return moves;
 }
 
-bool Knight::PossibleMoves(vector<string>& possiblemoves, bool hasmoved, string finalpos)
+bool Knight::CheckMoveAllowed(string endpos)
 {
+	vector<string> moves = PossibleMoves(endpos);
+
+	for (int i = 0; i < moves.size(); i++)
+	{
+		if (moves[i] == endpos)
+		{
+			return true;
+		}
+	}
+
 	return false;
 }

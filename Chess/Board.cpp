@@ -527,18 +527,18 @@ bool Board::IsTileAttacked(Player* player, string position)
 	int startX = TranslateXFromNotation(position[0]);
 	int startY = TranslateYFromNotation(position[1]);
 	
-	bool above = isAttackedAbove(startX, startY, playerColour);
-	bool below = isAttackedBelow(startX, startY, playerColour);
-	bool left = isAttackedLeft(startX, startY, playerColour);
-	bool right = isAttackedRight(startX, startY, playerColour);
-	bool upright = isAttackedUpRight(startX, startY, playerColour);
-	bool upleft = isAttackedUpLeft(startX, startY, playerColour);
-	bool downright = isAttackedDownRight(startX, startY, playerColour);
-	bool downleft = isAttackedDownLeft(startX, startY, playerColour);
+	vector<string> above = isAttackedAbove(startX, startY, playerColour);
+	vector<string> below = isAttackedBelow(startX, startY, playerColour);
+	vector<string> left = isAttackedLeft(startX, startY, playerColour);
+	vector<string> right = isAttackedRight(startX, startY, playerColour);
+	vector<string> upright = isAttackedUpRight(startX, startY, playerColour);
+	vector<string> upleft = isAttackedUpLeft(startX, startY, playerColour);
+	vector<string> downright = isAttackedDownRight(startX, startY, playerColour);
+	vector<string> downleft = isAttackedDownLeft(startX, startY, playerColour);
 	bool knight = isAttackedByKnight(position, playerColour);
 
 	//up right, up left and knight are returning true
-	if (above || below || left || right || upright || upleft || downright || downleft || knight)
+	if (above.size() != 0 || below.size() != 0 || left.size() != 0 || right.size() != 0 || upright.size() != 0 || upleft.size() != 0 || downright.size() != 0 || downleft.size() != 0 || knight)
 	{
 		return true;
 	}
@@ -653,11 +653,16 @@ bool Board::isCheckMate(bool currentPlayer)
 	
 	//need to return what piece is attacking, if kingChecked
 	//need to check whether the attack path can be blocked and whether that 
-	//
+	
+	//for the canAttackBeBlocked I need to have all the tiles in between the attack
+	//however when I then get what those tiles are I need to know what's attacking those very tiles
+	//then perform a test to see if those pieces can be blocked
 
 	if (kingChecked)
 	{
 		canKingMove = CanKingMove(player);
+	//canAttackBeBlocked
+	//canAttackBeKilled
 	}
 
 	if (!canKingMove && kingChecked)
@@ -671,150 +676,167 @@ bool Board::isCheckMate(bool currentPlayer)
 }
 
 
-bool Board::isAttackedBelow(int startX, int startY, char playerColour)
+vector<string> Board::isAttackedBelow(int startX, int startY, char playerColour)
 {
-	for (int y = startY; y < m_rows; y++)
+	vector<string> attackInfo;
+	for (int y = startY + 1; y < m_rows; y++)
 	{
 		string currentNotation = MakeNotation(startX, y);
 		string currentIdentity = *GetTilePointer(currentNotation);
 
+		attackInfo.push_back(currentNotation);
 		if (currentIdentity[0] == playerColour && currentIdentity[1] != 'K')
 		{
-			return false;
+			attackInfo.clear();
+			return attackInfo;
 		}
 		else if (currentIdentity != " " && currentIdentity[0] != playerColour && y == startY + 1)
 		{
 			if (currentIdentity[1] == rook || currentIdentity[1] == queen || currentIdentity[1] == king)
 			{
-				return true;
+				attackInfo.push_back(currentIdentity);
+				return attackInfo;
 			}
 		}
 		else if (currentIdentity != " " && currentIdentity[0] != playerColour)
 		{
 			if (currentIdentity[1] == rook || currentIdentity[1] == queen)
 			{
-				return true;
+				attackInfo.push_back(currentIdentity);
+				return attackInfo;
 			}
 		}
 	}
 
-	return false;
+	attackInfo.clear();
+	return attackInfo;
+	//attackInfo.clear();
+	//return attackInfo;
 }
 
-bool Board::isAttackedAbove(int startX, int startY, char playerColour)
+vector<string> Board::isAttackedAbove(int startX, int startY, char playerColour)
 {
-	for (int y = startY; y >= 0; y--)
+	vector<string> attackInfo;
+	for (int y = startY - 1; y >= 0; y--)
 	{
 		string currentNotation = MakeNotation(startX, y);
 		string currentIdentity = *GetTilePointer(currentNotation);
 
+		attackInfo.push_back(currentNotation);
 		if (currentIdentity[0] == playerColour && currentIdentity[1] != 'K')
 		{
-			return false;
+			attackInfo.clear();
+			return attackInfo;
 		}
 		else if (currentIdentity != " " && currentIdentity[0] != playerColour && y == startY - 1)
 		{
 			if (currentIdentity[1] == rook || currentIdentity[1] == queen || currentIdentity[1] == king)
 			{
-				return true;
+				attackInfo.push_back(currentIdentity);
+				return attackInfo;
 			}
 		}
 		else if (currentIdentity != " " && currentIdentity[0] != playerColour)
 		{
 			if (currentIdentity[1] == rook || currentIdentity[1] == queen)
 			{
-				return true;
+				attackInfo.push_back(currentIdentity);
+				return attackInfo;
 			}
 		}
 	}
 
-	return false;
+	attackInfo.clear();
+	return attackInfo;
 }
 
-bool Board::isAttackedRight(int startX, int startY, char playerColour)
+vector<string> Board::isAttackedRight(int startX, int startY, char playerColour)
 {
-	for (int x = startX; x < m_columns; x++)
+	vector<string> attackInfo;
+	for (int x = startX + 1; x < m_columns; x++)
 	{
 		string currentNotation = MakeNotation(x, startY);
 		string currentIdentity = *GetTilePointer(currentNotation);
+		attackInfo.push_back(currentNotation);
 
 		if (currentIdentity[0] == playerColour && currentIdentity[1] != 'K')
 		{
-			return false;
+			attackInfo.clear();
+			return attackInfo;
 		}
 		else if (currentIdentity != " " && currentIdentity[0] != playerColour && x == startX + 1)
 		{
 			if (currentIdentity[1] == rook || currentIdentity[1] == queen || currentIdentity[1] == king)
 			{
-				return true;
+				attackInfo.push_back(currentIdentity);
+				return attackInfo;
 			}
 		}
 		else if (currentIdentity != " " && currentIdentity[0] != playerColour)
 		{
 			if (currentIdentity[1] == rook || currentIdentity[1] == queen)
 			{
-				return true;
+				attackInfo.push_back(currentIdentity);
+				return attackInfo;
 			}
 		}
 	}
 
-	return false;
+	attackInfo.clear();
+	return attackInfo;
 }
 
-bool Board::isAttackedLeft(int startX, int startY, char playerColour)
+vector<string> Board::isAttackedLeft(int startX, int startY, char playerColour)
 {
-	for (int x = startX; x >= 0; x--)
+	vector<string> attackInfo;
+	for (int x = startX - 1; x >= 0; x--)
 	{
 		string currentNotation = MakeNotation(x, startY);
 		string currentIdentity = *GetTilePointer(currentNotation);
+		attackInfo.push_back(currentNotation);
 
 		if (currentIdentity[0] == playerColour && currentIdentity[1] != 'K')
 		{
-			return false;
+			attackInfo.clear();
+			return attackInfo;
 		}
 		else if (currentIdentity != " " && currentIdentity[0] != playerColour && x == startX - 1)
 		{
 			if (currentIdentity[1] == rook || currentIdentity[1] == queen || currentIdentity[1] == king)
 			{
-				return true;
+				attackInfo.push_back(currentIdentity);
+				return attackInfo;
 			}
 		}
 		else if (currentIdentity != " " && currentIdentity[0] != playerColour)
 		{
 			if (currentIdentity[1] == rook || currentIdentity[1] == queen)
 			{
-				return true;
+				attackInfo.push_back(currentIdentity);
+				return attackInfo;
 			}
 		}
 	}
 
-	return false;
+	attackInfo.clear();
+	return attackInfo;
 }
 
-//
-//
-//
-//
-//
-// all the for loops ahead are fucked, please fix them <3
-// Try making a for loop with a while loop that checks both outcomes
-// CHECK YOUR LOGIC IN POSITION, what happens when Bottom right hits a wall
-// yeah definitely broken, luckily for you, it's the same logic so you "should" be able to fix it all in one
-//
-//
-
-bool Board::isAttackedUpLeft(int startX, int startY, char playerColour)
+vector<string> Board::isAttackedUpLeft(int startX, int startY, char playerColour)
 {
-	int x = startX;
-	int y = startY;
-	
+	int x = startX - 1;
+	int y = startY - 1;
+	vector<string> attackInfo;
 	do
 	{	
 		string currentNotation = MakeNotation(x, y);
 		string currentIdentity = *GetTilePointer(currentNotation);
+		attackInfo.push_back(currentNotation);
+
 		if (currentIdentity[0] == playerColour && currentIdentity[1] != 'K')
 		{
-			return false;
+			attackInfo.clear();
+			return attackInfo;
 		}
 		else if (currentIdentity != " " && currentIdentity[0] != playerColour && y == startY - 1 && x == startX - 1)
 		{
@@ -822,14 +844,16 @@ bool Board::isAttackedUpLeft(int startX, int startY, char playerColour)
 			{
 				if (currentIdentity[1] == bishop || currentIdentity[1] == queen || currentIdentity[1] == king || currentIdentity[1] == pawn)
 				{
-					return true;
+					attackInfo.push_back(currentIdentity);
+					return attackInfo;
 				}
 			}
 			else
 			{
 				if (currentIdentity[1] == bishop || currentIdentity[1] == queen || currentIdentity[1] == king)
 				{
-					return true;
+					attackInfo.push_back(currentIdentity);
+					return attackInfo;
 				}
 			}
 		}
@@ -837,28 +861,34 @@ bool Board::isAttackedUpLeft(int startX, int startY, char playerColour)
 		{
 			if (currentIdentity[1] == bishop || currentIdentity[1] == queen)
 			{
-				return true;
+				attackInfo.push_back(currentIdentity);
+				return attackInfo;
 			}
 		}	
 		x--;
 		y--;
 
 	} while (y >= 0 && x >= 0);
-	return false;
+	attackInfo.clear();
+	return attackInfo;
 }
 
 
-bool Board::isAttackedUpRight(int startX, int startY, char playerColour)
+vector<string> Board::isAttackedUpRight(int startX, int startY, char playerColour)
 {
-	int x = startX;
-	int y = startY;
+	int x = startX + 1;
+	int y = startY - 1;
+	vector<string> attackInfo;
 	do
 	{
 		string currentNotation = MakeNotation(x, y);
 		string currentIdentity = *GetTilePointer(currentNotation);
+		attackInfo.push_back(currentNotation);
+
 		if (currentIdentity[0] == playerColour && currentIdentity[1] != 'K')
 		{
-			return false;
+			attackInfo.clear();
+			return attackInfo;
 		}
 		else if (currentIdentity != " " && currentIdentity[0] != playerColour && y == startY - 1 && x == startX + 1)
 		{
@@ -866,14 +896,16 @@ bool Board::isAttackedUpRight(int startX, int startY, char playerColour)
 			{
 				if (currentIdentity[1] == bishop || currentIdentity[1] == queen || currentIdentity[1] == king || currentIdentity[1] == pawn)
 				{
-					return true;
+					attackInfo.push_back(currentIdentity);
+					return attackInfo;
 				}
 			}
 			else
 			{
 				if (currentIdentity[1] == bishop || currentIdentity[1] == queen || currentIdentity[1] == king)
 				{
-					return true;
+					attackInfo.push_back(currentIdentity);
+					return attackInfo;
 				}
 			}
 		}
@@ -881,26 +913,32 @@ bool Board::isAttackedUpRight(int startX, int startY, char playerColour)
 		{
 			if (currentIdentity[1] == bishop || currentIdentity[1] == queen)
 			{
-				return true;
+				attackInfo.push_back(currentIdentity);
+				return attackInfo;
 			}
 		}
 		x++;
 		y--;
 	} while (y >= 0 && x < m_columns);
-	return false;
+	attackInfo.clear();
+	return attackInfo;
 }
 
-bool Board::isAttackedDownRight(int startX, int startY, char playerColour)
+vector<string> Board::isAttackedDownRight(int startX, int startY, char playerColour)
 {
-	int x = startX;
-	int y = startY;
+	int x = startX + 1;
+	int y = startY + 1;
+	vector<string> attackInfo;
 	do
 	{
 		string currentNotation = MakeNotation(x, y);
 		string currentIdentity = *GetTilePointer(currentNotation);
+		attackInfo.push_back(currentNotation);
+
 		if (currentIdentity[0] == playerColour && currentIdentity[1] != 'K')
 		{
-			return false;
+			attackInfo.clear();
+			return attackInfo;
 		}
 		else if (currentIdentity != " " && currentIdentity[0] != playerColour && y == startY + 1 && x == startX + 1)
 		{
@@ -908,14 +946,16 @@ bool Board::isAttackedDownRight(int startX, int startY, char playerColour)
 			{
 				if (currentIdentity[1] == bishop || currentIdentity[1] == queen || currentIdentity[1] == king || currentIdentity[1] == pawn)
 				{
-					return true;
+					attackInfo.push_back(currentIdentity);
+					return attackInfo;
 				}
 			}
 			else
 			{
 				if (currentIdentity[1] == bishop || currentIdentity[1] == queen || currentIdentity[1] == king)
 				{
-					return true;
+					attackInfo.push_back(currentIdentity);
+					return attackInfo;
 				}
 			}
 		}
@@ -923,27 +963,33 @@ bool Board::isAttackedDownRight(int startX, int startY, char playerColour)
 		{
 			if (currentIdentity[1] == bishop || currentIdentity[1] == queen)
 			{
-				return true;
+				attackInfo.push_back(currentIdentity);
+				return attackInfo;
 			}
 		}
 		x++;
 		y++;
 	}while (x < m_columns && y < m_rows);
-	return false;
+	attackInfo.clear();
+	return attackInfo;
 }
 
-bool Board::isAttackedDownLeft(int startX, int startY, char playerColour)
+vector<string> Board::isAttackedDownLeft(int startX, int startY, char playerColour)
 {
-	int x = startX;
-	int y = startY;
+	int x = startX - 1;
+	int y = startY + 1;
+	vector<string> attackInfo;
 
 	do
 	{
 		string currentNotation = MakeNotation(x, y);
 		string currentIdentity = *GetTilePointer(currentNotation);
+		attackInfo.push_back(currentNotation);
+
 		if (currentIdentity[0] == playerColour && currentIdentity[1] != 'K')
 		{
-			return false;
+			attackInfo.clear();
+			return attackInfo;
 		}
 		else if (currentIdentity != " " && currentIdentity[0] != playerColour && y == startY + 1 && x == startX - 1)
 		{
@@ -951,14 +997,16 @@ bool Board::isAttackedDownLeft(int startX, int startY, char playerColour)
 			{
 				if (currentIdentity[1] == bishop || currentIdentity[1] == queen || currentIdentity[1] == king || currentIdentity[1] == pawn)
 				{
-					return true;
+					attackInfo.push_back(currentIdentity);
+					return attackInfo;
 				}
 			}
 			else
 			{
 				if (currentIdentity[1] == bishop || currentIdentity[1] == queen || currentIdentity[1] == king)
 				{
-					return true;
+					attackInfo.push_back(currentIdentity);
+					return attackInfo;
 				}
 			}
 		}
@@ -966,7 +1014,8 @@ bool Board::isAttackedDownLeft(int startX, int startY, char playerColour)
 		{
 			if (currentIdentity[1] == bishop || currentIdentity[1] == queen)
 			{
-				return true;
+				attackInfo.push_back(currentIdentity);
+				return attackInfo;
 			}
 		}
 		x--;
@@ -974,7 +1023,8 @@ bool Board::isAttackedDownLeft(int startX, int startY, char playerColour)
 
 	}while (x >= 0 && y < m_rows);
 	
-	return false;
+	attackInfo.clear();
+	return attackInfo;
 }
 
 bool Board::isAttackedByKnight(string position, char playerColour)

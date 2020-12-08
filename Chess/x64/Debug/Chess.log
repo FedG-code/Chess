@@ -1,4 +1,8 @@
 ﻿  Board.cpp
 C:\Users\feder\source\repos\Chess\Chess\Board.cpp(560,42): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  Chess.cpp
+  Game.cpp
+  Pawn.cpp
+  Generating Code...
 C:\Users\feder\source\repos\Chess\Chess\Board.cpp(358): warning C4715: 'Board::CanPieceMove': not all control paths return a value
   Chess.vcxproj -> C:\Users\feder\source\repos\Chess\x64\Debug\Chess.exe

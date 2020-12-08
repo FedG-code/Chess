@@ -73,13 +73,13 @@ public:
 	bool wouldKingBeInCheck(bool currentPlayer, string startpos, string endpos);
 	bool isCheckMate(bool currentPlayer);
 
-	bool isAttackedAbove(int startX, int startY, char playerColour);
-	bool isAttackedBelow(int startX, int startY, char playerColour);
-	bool isAttackedRight(int startX, int startY, char playerColour);
-	bool isAttackedLeft(int startX, int startY, char playerColour);
-	bool isAttackedUpRight(int startX, int startY, char playerColour);
-	bool isAttackedUpLeft(int startX, int startY, char playerColour);
-	bool isAttackedDownRight(int startX, int startY, char playerColour);
-	bool isAttackedDownLeft(int startX, int startY, char playerColour);
+	vector<string> isAttackedAbove(int startX, int startY, char playerColour);
+	vector<string> isAttackedBelow(int startX, int startY, char playerColour);
+	vector<string> isAttackedRight(int startX, int startY, char playerColour);
+	vector<string> isAttackedLeft(int startX, int startY, char playerColour);
+	vector<string> isAttackedUpRight(int startX, int startY, char playerColour);
+	vector<string> isAttackedUpLeft(int startX, int startY, char playerColour);
+	vector<string> isAttackedDownRight(int startX, int startY, char playerColour);
+	vector<string> isAttackedDownLeft(int startX, int startY, char playerColour);
 	bool isAttackedByKnight(string position, char playerColour);
 };

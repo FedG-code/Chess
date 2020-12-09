@@ -20,6 +20,8 @@ constexpr int kBlackPawnRow = 1;
 constexpr int kWhitePieceRow = 7;
 constexpr int kWhitePawnRow = 6;
 
+static bool attacked = true;
+static bool blockable = false;
 const char emptytile = ' ';
 
 class Board
@@ -66,20 +68,29 @@ public:
 	bool CheckPossible(vector<string> moves, string endpos);
 	bool CheckClearPath(vector<string> moves, string endpos);
 
-	vector<string> SortPawnOut(string startpos, string endpos);
-	bool IsTileAttacked(Player* player, string position);
+	
+	
 	bool CanKingMove(Player* player);
 	bool isKingInCheck(bool currentPlayer);
 	bool wouldKingBeInCheck(bool currentPlayer, string startpos, string endpos);
 	bool isCheckMate(bool currentPlayer);
 
-	vector<string> isAttackedAbove(int startX, int startY, char playerColour);
+
+
+	bool IsTileAttacked(Player* player, string position, bool attackedOrBlockable);
+	//int NumberOfAttacks(vector<string> attackInfo);
+
 	vector<string> isAttackedBelow(int startX, int startY, char playerColour);
+	vector<string> isBlockableBelow(int startX, int startY, char playerColour);
+	vector<string> isAttackedAbove(int startX, int startY, char playerColour);
+	vector<string> isBlockableAbove(int startX, int startY, char playerColour);
 	vector<string> isAttackedRight(int startX, int startY, char playerColour);
 	vector<string> isAttackedLeft(int startX, int startY, char playerColour);
 	vector<string> isAttackedUpRight(int startX, int startY, char playerColour);
 	vector<string> isAttackedUpLeft(int startX, int startY, char playerColour);
 	vector<string> isAttackedDownRight(int startX, int startY, char playerColour);
 	vector<string> isAttackedDownLeft(int startX, int startY, char playerColour);
-	bool isAttackedByKnight(string position, char playerColour);
+	vector<string> isAttackedByKnight(string position, char playerColour);
+
+	vector<string> SortPawnOut(string startpos, string endpos);
 };

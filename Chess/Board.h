@@ -70,16 +70,23 @@ public:
 
 	
 	
-	bool CanKingMove(Player* player);
+	bool CanKingMove(bool currentPlayer);
 	bool isKingInCheck(bool currentPlayer);
 	bool wouldKingBeInCheck(bool currentPlayer, string startpos, string endpos);
 	bool isCheckMate(bool currentPlayer);
 
 
 
-	bool IsTileAttacked(Player* player, string position, bool attackedOrBlockable);
-	//int NumberOfAttacks(vector<string> attackInfo);
+	vector<string> IsTileAttacked(bool currentPlayer, string position, bool attackedOrBlockable);
 
+	int NumberOfAttacks(vector<string> attackInfo);
+	char GetMeOneAttackerID(vector<string> attackInfo);
+	string GetMeOneAttackerPos(vector<string> attackInfo);
+	vector<string> GetMeAllAttackerPos(vector<string> attackInfo);
+	vector<string> GetMePathToBlock(vector<string> attackInfo);
+	bool canIKill(bool currentPlayer, string attackerPos);
+	bool CanIBlock(bool currentPlayer, vector<string> attackerInfo);
+	
 	vector<string> isAttackedBelow(int startX, int startY, char playerColour);
 	vector<string> isBlockableBelow(int startX, int startY, char playerColour);
 	vector<string> isAttackedAbove(int startX, int startY, char playerColour);
@@ -93,4 +100,6 @@ public:
 	vector<string> isAttackedByKnight(string position, char playerColour);
 
 	vector<string> SortPawnOut(string startpos, string endpos);
+
+
 };

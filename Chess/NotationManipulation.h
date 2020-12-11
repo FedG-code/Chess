@@ -170,11 +170,11 @@ static bool CheckNotationValid(string notation)
 	char string1 = notation[1];
 	if (string0 == 'a' || string0 == 'b' || string0 == 'c' || string0 == 'd' || string0 == 'e' || string0 == 'f' || string0 == 'g' || string0 == 'h')
 	{
-		return true;
+
 	}
 	else if (string0 == 'A' || string0 == 'B' || string0 == 'C' || string0 == 'D' || string0 == 'E' || string0 == 'F' || string0 == 'G' || string0 == 'H')
 	{
-		return true;
+
 	}
 	else
 	{

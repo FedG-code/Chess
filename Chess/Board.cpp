@@ -52,10 +52,8 @@ void Board::DrawBoard()
 				DrawTile(notation);
 			}
 		}
-		cout << " " << abs(7-i)+1 << endl;
-
 		SetConsoleTextAttribute(console, kRegularColour);
-
+		cout << " " << abs(7-i)+1 << endl;
 	}
 
 	cout << 'a' << 'b' << 'c' << 'd' << 'e' << 'f' << 'g' << 'h' << endl;
@@ -609,7 +607,21 @@ bool Board::isCheckMate(bool currentPlayer)
 				return true;
 			}
 			else
-			{			
+			{	
+				if (GetMeOneAttackerID(attackInfo) == knight)
+				{
+					string attackerPos = GetMeOneAttackerPos(attackInfo);
+					bool killAttempt = canIKill(currentPlayer, attackerPos);
+
+					if (killAttempt)
+					{
+						return false;
+					}
+					else
+					{
+						return true;
+					}
+				}
 				//else check if the final piece can be killed or blocked
 				//if not it's a win for the other team
 				string attackerPos = GetMeOneAttackerPos(attackInfo);
@@ -699,22 +711,24 @@ vector<string> Board::IsTileAttacked(bool currentPlayer, string position, bool a
 
 	attackInfo.insert(attackInfo.end(), below.begin(), below.end());
 
-	vector<string> left = isAttackedLeft(startX, startY, playerColour);
+	//make a blockable variant for each of these
+	vector<string> left = isAttackedLeft(startX, startY, playerColour, attackedOrBlockable);
 	attackInfo.insert(attackInfo.end(), left.begin(), left.end());
 
-	vector<string> right = isAttackedRight(startX, startY, playerColour);
+	vector<string> right = isAttackedRight(startX, startY, playerColour, attackedOrBlockable);
 	attackInfo.insert(attackInfo.end(), right.begin(), right.end());
 
-	vector<string> upright = isAttackedUpRight(startX, startY, playerColour);
+	vector<string> upright = isAttackedUpRight(startX, startY, playerColour, attackedOrBlockable);
 	attackInfo.insert(attackInfo.end(), upright.begin(), upright.end());
 
-	vector<string> upleft = isAttackedUpLeft(startX, startY, playerColour);
+	vector<string> upleft = isAttackedUpLeft(startX, startY, playerColour, attackedOrBlockable);
 	attackInfo.insert(attackInfo.end(), upleft.begin(), upleft.end());
 
-	vector<string> downright = isAttackedDownRight(startX, startY, playerColour);
+	//here
+	vector<string> downright = isAttackedDownRight(startX, startY, playerColour, attackedOrBlockable);
 	attackInfo.insert(attackInfo.end(), downright.begin(), downright.end());
 
-	vector<string> downleft = isAttackedDownLeft(startX, startY, playerColour);
+	vector<string> downleft = isAttackedDownLeft(startX, startY, playerColour, attackedOrBlockable);
 	attackInfo.insert(attackInfo.end(), downleft.begin(), downleft.end());
 
 	vector<string> knight = isAttackedByKnight(position, playerColour);
@@ -837,12 +851,9 @@ bool Board::CanIBlock(bool currentPlayer, vector<string> attackerInfo)
 	for (int i = 0; i < pathToBlock.size(); i++)
 	{
 		vector<string> isTileBlockable = IsTileAttacked(!currentPlayer, pathToBlock[i], blockable);
-		if (isTileBlockable.size() == 0)
+		if (isTileBlockable.size() != 0)
 		{
 			//don't do any calculation basically
-		}
-		else
-		{
 			vector<string> myBlockers = GetMeAllAttackerPos(isTileBlockable);
 			for (int j = 0; j < myBlockers.size(); j++)
 			{
@@ -1059,7 +1070,7 @@ vector<string> Board::isBlockableAbove(int startX, int startY, char playerColour
 	return attackInfo;
 }
 
-vector<string> Board::isAttackedRight(int startX, int startY, char playerColour)
+vector<string> Board::isAttackedRight(int startX, int startY, char playerColour, bool attackedOrBlocked)
 {
 	vector<string> attackInfo;
 	for (int x = startX + 1; x < m_columns; x++)
@@ -1074,7 +1085,7 @@ vector<string> Board::isAttackedRight(int startX, int startY, char playerColour)
 				attackInfo.clear();
 				return attackInfo;
 			}
-			else if (x == startX + 1 && currentIdentity[1] == king)
+			else if (x == startX + 1 && currentIdentity[1] == king && attackedOrBlocked == attacked)
 			{
 				attackInfo.push_back(currentIdentity);
 				return attackInfo;
@@ -1098,7 +1109,7 @@ vector<string> Board::isAttackedRight(int startX, int startY, char playerColour)
 	return attackInfo;
 }
 
-vector<string> Board::isAttackedLeft(int startX, int startY, char playerColour)
+vector<string> Board::isAttackedLeft(int startX, int startY, char playerColour, bool attackedOrBlocked)
 {
 	vector<string> attackInfo;
 	for (int x = startX - 1; x >= 0; x--)
@@ -1114,7 +1125,7 @@ vector<string> Board::isAttackedLeft(int startX, int startY, char playerColour)
 				attackInfo.clear();
 				return attackInfo;
 			}
-			else if (x == startX - 1 && currentIdentity[1] == king)
+			else if (x == startX - 1 && currentIdentity[1] == king  && attackedOrBlocked == attacked)
 			{
 				attackInfo.push_back(currentIdentity);
 				return attackInfo;
@@ -1139,7 +1150,7 @@ vector<string> Board::isAttackedLeft(int startX, int startY, char playerColour)
 	return attackInfo;
 }
 
-vector<string> Board::isAttackedUpLeft(int startX, int startY, char playerColour)
+vector<string> Board::isAttackedUpLeft(int startX, int startY, char playerColour, bool attackedOrBlocked)
 {
 	int x = startX - 1;
 	int y = startY - 1;
@@ -1157,12 +1168,12 @@ vector<string> Board::isAttackedUpLeft(int startX, int startY, char playerColour
 				attackInfo.clear();
 				return attackInfo;
 			}
-			else if (y == startY - 1 && x == startX - 1 && playerColour == white && currentIdentity[1] == pawn)
+			else if (y == startY - 1 && x == startX - 1 && playerColour == white && currentIdentity[1] == pawn && attackedOrBlocked == attacked)
 			{
 				attackInfo.push_back(currentIdentity);
 				return attackInfo;
 			}
-			else if (y == startY - 1 && x == startX - 1 && currentIdentity[1] == king)
+			else if (y == startY - 1 && x == startX - 1 && currentIdentity[1] == king && attackedOrBlocked == attacked)
 			{
 				attackInfo.push_back(currentIdentity);
 				return attackInfo;
@@ -1191,7 +1202,7 @@ vector<string> Board::isAttackedUpLeft(int startX, int startY, char playerColour
 }
 
 
-vector<string> Board::isAttackedUpRight(int startX, int startY, char playerColour)
+vector<string> Board::isAttackedUpRight(int startX, int startY, char playerColour, bool attackedOrBlocked)
 {
 	int x = startX + 1;
 	int y = startY - 1;
@@ -1209,13 +1220,13 @@ vector<string> Board::isAttackedUpRight(int startX, int startY, char playerColou
 				attackInfo.clear();
 				return attackInfo;
 			}
-			else if (y == startY - 1 && x == startX + 1 && playerColour == white && currentIdentity[1] == pawn)
+			else if (y == startY - 1 && x == startX + 1 && playerColour == white && currentIdentity[1] == pawn && attackedOrBlocked == attacked)
 			{
 
 				attackInfo.push_back(currentIdentity);
 				return attackInfo;
 			}
-			else if(y == startY - 1 && x == startX + 1 && currentIdentity[1] == king)
+			else if(y == startY - 1 && x == startX + 1 && currentIdentity[1] == king && attackedOrBlocked == attacked)
 			{
 						attackInfo.push_back(currentIdentity);
 						return attackInfo;
@@ -1243,7 +1254,7 @@ vector<string> Board::isAttackedUpRight(int startX, int startY, char playerColou
 	return attackInfo;
 }
 
-vector<string> Board::isAttackedDownRight(int startX, int startY, char playerColour)
+vector<string> Board::isAttackedDownRight(int startX, int startY, char playerColour, bool attackedOrBlocked)
 {
 	int x = startX + 1;
 	int y = startY + 1;
@@ -1262,13 +1273,13 @@ vector<string> Board::isAttackedDownRight(int startX, int startY, char playerCol
 				attackInfo.clear();
 				return attackInfo;
 			}
-			else if (y == startY + 1 && x == startX + 1 && playerColour == black && currentIdentity[1] == pawn)
+			else if (y == startY + 1 && x == startX + 1 && playerColour == black && currentIdentity[1] == pawn && attackedOrBlocked == attacked)
 			{
 				attackInfo.push_back(currentIdentity);
 				return attackInfo;
 		
 			}
-			else if (y == startY + 1 && x == startX + 1 && currentIdentity[1] == king)
+			else if (y == startY + 1 && x == startX + 1 && currentIdentity[1] == king && attackedOrBlocked == attacked)
 			{
 				attackInfo.push_back(currentIdentity);
 				return attackInfo;			
@@ -1296,7 +1307,7 @@ vector<string> Board::isAttackedDownRight(int startX, int startY, char playerCol
 	return attackInfo;
 }
 
-vector<string> Board::isAttackedDownLeft(int startX, int startY, char playerColour)
+vector<string> Board::isAttackedDownLeft(int startX, int startY, char playerColour, bool attackedOrBlocked)
 {
 	int x = startX - 1;
 	int y = startY + 1;
@@ -1315,12 +1326,12 @@ vector<string> Board::isAttackedDownLeft(int startX, int startY, char playerColo
 				attackInfo.clear();
 				return attackInfo;
 			}
-			else if (y == startY + 1 && x == startX - 1 && playerColour == black && currentIdentity[1] == pawn)
+			else if (y == startY + 1 && x == startX - 1 && playerColour == black && currentIdentity[1] == pawn && attackedOrBlocked == attacked)
 			{
 				attackInfo.push_back(currentIdentity);
 				return attackInfo;
 			}
-			else if (y == startY + 1 && x == startX - 1 && currentIdentity[1] == king)
+			else if (y == startY + 1 && x == startX - 1 && currentIdentity[1] == king && attackedOrBlocked == attacked)
 			{
 				attackInfo.push_back(currentIdentity);
 				return attackInfo;

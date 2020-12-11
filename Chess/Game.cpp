@@ -78,11 +78,15 @@ void Game::PlayTurn()
 				cout << "Careful, your king is in check" << endl;
 			}
 
-			cout << "Please enter the tile of the piece you want to move: ";
+			cout << "Please enter the tile of the piece you want to move or ff if you surrender: ";
 
 			cin >> pieceSelectionAttempt;
 
-
+			if (pieceSelectionAttempt == "ff")
+			{
+				isGameOver = true;
+				return;
+			}
 			//string pieceIdentity = ChessBoard.GetTileIdentity(pieceSelectionAttempt);
 			bool pieceSelectionSucess = ChessBoard.CheckGetPieceValid(currentPlayer, pieceSelectionAttempt);
 
@@ -91,6 +95,12 @@ void Game::PlayTurn()
 				cout << "That is not a piece you can move, try again: ";
 				cin >> pieceSelectionAttempt;
 				pieceSelectionSucess = ChessBoard.CheckGetPieceValid(currentPlayer, pieceSelectionAttempt);
+
+				if (pieceSelectionAttempt == "ff")
+				{
+					isGameOver = true;
+					return;
+				}
 			}
 
 			//should return the type of piece it is (for debugging the whole string) and highlight it

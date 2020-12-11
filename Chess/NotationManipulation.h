@@ -159,7 +159,40 @@ static string MakeNotation(int x, int y)
 	return notation;
 }
 
-
+static bool CheckNotationValid(string notation)
+{
+	if (notation.size() > 2 || notation.size() < 2)
+	{
+		cout << "not a valid coordinate, should only have 2 characters" << endl;
+		return false;
+	}
+	char string0 = notation[0];
+	char string1 = notation[1];
+	if (string0 == 'a' || string0 == 'b' || string0 == 'c' || string0 == 'd' || string0 == 'e' || string0 == 'f' || string0 == 'g' || string0 == 'h')
+	{
+		return true;
+	}
+	else if (string0 == 'A' || string0 == 'B' || string0 == 'C' || string0 == 'D' || string0 == 'E' || string0 == 'F' || string0 == 'G' || string0 == 'H')
+	{
+		return true;
+	}
+	else
+	{
+		cout << "Your first part of the coordinate is wrong" << endl;
+		return false;
+	}
+	
+	
+	if (string1 == '1' || string1 == '2' || string1 == '3' || string1 == '4' || string1 == '5' || string1 == '6' || string1 == '7' || string1 == '8')
+	{
+		return true;
+	}
+	else
+	{
+		cout << "your second part of the coordinate is wrong" << endl;
+		return false;
+	}
+}
 
 
 

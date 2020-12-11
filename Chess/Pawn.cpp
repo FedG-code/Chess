@@ -41,16 +41,22 @@ vector<string> Pawn::PossibleMoves(string finalpos)
 		//check diagonal tiles
 		if (m_canEatLaterally)
 		{
-			pos.Bump(Up);
-			pos.Bump(Right);
+			bool eat1 = pos.Bump(Up);
+			bool eat2 = pos.Bump(Right);
 
-			string diag1 = pos.GetCoordinatesNotation();
-			string diag1Identity;
+			if (eat1 && eat2)
+			{
+				moves.push_back(pos.GetCoordinatesNotation());
+				
+			}
 			pos.SetPosition(startpos);
 
-			pos.Bump(Up);
-			pos.Bump(Left);
-			string diag2 = pos.GetCoordinatesNotation();
+			bool eat3 = pos.Bump(Up);
+			bool eat4 = pos.Bump(Left);
+			if (eat3 && eat4)
+			{
+				moves.push_back(pos.GetCoordinatesNotation());
+			}
 			pos.SetPosition(startpos);
 		}
 
@@ -72,15 +78,22 @@ vector<string> Pawn::PossibleMoves(string finalpos)
 		//check diagonal tiles
 		if (m_canEatLaterally)
 		{
-			pos.Bump(Down);
-			pos.Bump(Right);
+			bool eat1 = pos.Bump(Down);
+			bool eat2 = pos.Bump(Right);
 
-			moves.push_back(pos.GetCoordinatesNotation());
+			if (eat1 && eat2)
+			{
+				moves.push_back(pos.GetCoordinatesNotation());
+
+			}
 			pos.SetPosition(startpos);
 
-			pos.Bump(Down);
-			pos.Bump(Left);
-			moves.push_back(pos.GetCoordinatesNotation());
+			bool eat3 = pos.Bump(Down);
+			bool eat4 = pos.Bump(Left);
+			if (eat3 && eat4)
+			{
+				moves.push_back(pos.GetCoordinatesNotation());
+			}
 			pos.SetPosition(startpos);
 		}
 	}

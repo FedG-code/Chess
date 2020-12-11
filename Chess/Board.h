@@ -91,12 +91,12 @@ public:
 	vector<string> isBlockableBelow(int startX, int startY, char playerColour);
 	vector<string> isAttackedAbove(int startX, int startY, char playerColour);
 	vector<string> isBlockableAbove(int startX, int startY, char playerColour);
-	vector<string> isAttackedRight(int startX, int startY, char playerColour);
-	vector<string> isAttackedLeft(int startX, int startY, char playerColour);
-	vector<string> isAttackedUpRight(int startX, int startY, char playerColour);
-	vector<string> isAttackedUpLeft(int startX, int startY, char playerColour);
-	vector<string> isAttackedDownRight(int startX, int startY, char playerColour);
-	vector<string> isAttackedDownLeft(int startX, int startY, char playerColour);
+	vector<string> isAttackedRight(int startX, int startY, char playerColour, bool attackedOrBlocked);
+	vector<string> isAttackedLeft(int startX, int startY, char playerColour, bool attackedOrBlocked);
+	vector<string> isAttackedUpRight(int startX, int startY, char playerColour, bool attackedOrBlocked);
+	vector<string> isAttackedUpLeft(int startX, int startY, char playerColour, bool attackedOrBlocked);
+	vector<string> isAttackedDownRight(int startX, int startY, char playerColour, bool attackedOrBlocked);
+	vector<string> isAttackedDownLeft(int startX, int startY, char playerColour, bool attackedOrBlocked);
 	vector<string> isAttackedByKnight(string position, char playerColour);
 
 	vector<string> SortPawnOut(string startpos, string endpos);

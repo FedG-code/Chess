@@ -62,16 +62,18 @@ void Game::PlayTurn()
 	bool CheckKingAttackedEndTurn = false;
 	do
 	{
-		isGameOver = ChessBoard.isCheckMate(currentPlayer);
 
-		if (isGameOver)
-		{
-			return;
-		}
 
 
 		do
 		{
+			isGameOver = ChessBoard.isCheckMate(currentPlayer);
+
+			if (isGameOver)
+			{
+				return;
+			}
+
 			bool kingIsChecked = ChessBoard.isKingInCheck(currentPlayer);
 			if (kingIsChecked)
 			{

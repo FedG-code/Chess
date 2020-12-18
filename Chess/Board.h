@@ -84,9 +84,15 @@ public:
 	string GetMeOneAttackerPos(vector<string> attackInfo);
 	vector<string> GetMeAllAttackerPos(vector<string> attackInfo);
 	vector<string> GetMePathToBlock(vector<string> attackInfo);
-	bool canIKill(bool currentPlayer, string attackerPos);
+	bool CanIKill(bool currentPlayer, string attackerPos);
 	bool CanIBlock(bool currentPlayer, vector<string> attackerInfo);
 	
+	void Promotion(Player* player, string location);
+
+	string DoesKingWantToCastle(string startpos, string endpos);
+	bool AreCastlingSquaresEmpty(string startpos, string endpos);
+	bool CanKingCastle(string startpos, string endpos);
+
 	vector<string> isAttackedBelow(int startX, int startY, char playerColour);
 	vector<string> isBlockableBelow(int startX, int startY, char playerColour);
 	vector<string> isAttackedAbove(int startX, int startY, char playerColour);

@@ -19,7 +19,7 @@ public:
 	Knight Knights[PieceArrayNum];
 	Bishop Bishops[PieceArrayNum];
 	Rook Rooks[PieceArrayNum];
-	Queen Queen;
+	vector<Queen> Queens;
 	King King;
 
 	Player(char colour);
@@ -36,6 +36,7 @@ public:
 
 	void EatPiece(Piece* piece);
 	vector<string> ReturnEatenPieces();
+	void MakeQueen(string location);
 	//string WhichPieceAtLocation(string location);
 
 

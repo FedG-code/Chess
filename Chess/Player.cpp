@@ -54,7 +54,7 @@ void Player::TeamSetup()
 			whichrook.push_back(IntToChar(i));
 			Rooks[i].SetIdentity(whichrook);
 		}
-		Queen.SetIdentity(white_queen);
+		MakeQueen("d1");
 		King.SetIdentity(white_king);
 	}
 	else if (m_PlayerColour == black)
@@ -83,7 +83,7 @@ void Player::TeamSetup()
 			whichrook.push_back(IntToChar(i));
 			Rooks[i].SetIdentity(whichrook);
 		}
-		Queen.SetIdentity(black_queen);
+		MakeQueen("d8");
 		King.SetIdentity(black_king);
 	}
 }
@@ -145,9 +145,46 @@ void Player::TeamSetup()
 
 Piece* Player::GetPiece(string pieceName)
 {
-	if (m_PlayerColour == white)
+	char pieceColour = pieceName[0];
+	if (pieceColour != m_PlayerColour)
 	{
-		if (pieceName.compare(white_pawn_0) == 0)
+		cout << "That piece is not your colour" << endl;
+
+		return nullptr;
+	}
+	char pieceIdentity = pieceName[1];
+
+	int pieceIndex;
+	if (pieceIdentity != king)
+	{
+		pieceIndex = CharToInt(pieceName[2]);
+	}
+	
+	if (pieceIdentity == pawn)
+	{
+		return &Pawns[pieceIndex];
+	}
+	else if (pieceIdentity == knight)
+	{
+		return &Knights[pieceIndex];
+	}
+	else if (pieceIdentity == bishop)
+	{
+		return &Bishops[pieceIndex];
+	}
+	else if (pieceIdentity == rook)
+	{
+		return &Rooks[pieceIndex];
+	}
+	else if (pieceIdentity == queen)
+	{
+		return &Queens[pieceIndex];
+	}
+	else if (pieceIdentity == king)
+	{
+		return &King;
+	}
+	/*	if (pieceName.compare(white_pawn_0) == 0)
 		{
 			return &Pawns[0];
 		}
@@ -193,7 +230,7 @@ Piece* Player::GetPiece(string pieceName)
 		}
 		if (pieceName.compare(white_bishop_1) == 0)
 		{
-			return &Bishops[0];
+			return &Bishops[1];
 		}
 		if (pieceName.compare(white_rook_0) == 0)
 		{
@@ -260,7 +297,7 @@ Piece* Player::GetPiece(string pieceName)
 		}
 		if (pieceName.compare(black_bishop_1) == 0)
 		{
-			return &Bishops[0];
+			return &Bishops[1];
 		}
 		if (pieceName.compare(black_rook_0) == 0)
 		{
@@ -278,11 +315,11 @@ Piece* Player::GetPiece(string pieceName)
 		{
 			return &King;
 		}
-	}
+	}*/
 
 	return nullptr;
 }
-
+  
 
 void Player::EatPiece(Piece* piece)
 {
@@ -295,4 +332,22 @@ void Player::EatPiece(Piece* piece)
 vector<string> Player::ReturnEatenPieces()
 {
 	return m_EatenPieces;
+}
+
+void Player::MakeQueen(string location)
+{
+	int queenIndex = Queens.size();
+	char number = IntToChar(queenIndex);
+	Queen newQueen;
+	newQueen.pos.SetPosition(location);
+	//generate queen name
+	char queenColour = GetPlayerColour();
+	string queenName;
+	queenName.push_back(queenColour);
+	queenName.push_back('Q');
+	queenName.push_back(number);
+
+	newQueen.SetIdentity(queenName);
+
+	Queens.push_back(newQueen);
 }

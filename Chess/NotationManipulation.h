@@ -221,7 +221,7 @@ static const string white_rook_0 = "wr0";
 static const string white_rook_1 = "wr1";
 
 static const string white_queen = "wQ";
-//static const string white_queen_0 = "wQ0";
+static const string white_queen_0 = "wQ0";
 static const string white_king = "wK";
 //static const string white_king_0 = "wK0";
 
@@ -248,7 +248,7 @@ static const string black_rook_0 = "br0";
 static const string black_rook_1 = "br1";
 
 static const string black_queen = "bQ";
-//static const string black_queen_0 = "bQ0";
+static const string black_queen_0 = "bQ0";
 static const string black_king = "bK";
 //static const string black_king_0 = "bK0";
 

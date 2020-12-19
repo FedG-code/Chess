@@ -218,7 +218,7 @@ void Board::PieceRow(char colour, int row)
 		SetPiece(white_knight_1, MakeNotation(kRightKnightStartPos, row));
 		SetPiece(white_bishop_0, MakeNotation(kLeftBishopStartPos, row));
 		SetPiece(white_bishop_1, MakeNotation(kRightBishopStartPos, row));
-		SetPiece(white_queen, MakeNotation(kQueenStartPos, row));
+		SetPiece(white_queen_0, MakeNotation(kQueenStartPos, row));
 		SetPiece(white_king, MakeNotation(kKingStartPos, row));
 	}
 	else if (colour == black)
@@ -229,7 +229,7 @@ void Board::PieceRow(char colour, int row)
 		SetPiece(black_knight_1, MakeNotation(kRightKnightStartPos, row));
 		SetPiece(black_bishop_0, MakeNotation(kLeftBishopStartPos, row));
 		SetPiece(black_bishop_1, MakeNotation(kRightBishopStartPos, row));
-		SetPiece(black_queen, MakeNotation(kQueenStartPos, row));
+		SetPiece(black_queen_0, MakeNotation(kQueenStartPos, row));
 		SetPiece(black_king, MakeNotation(kKingStartPos, row));
 	}
 }
@@ -302,8 +302,6 @@ bool Board::CanPieceMove(string startpos, string endpos)
 	{
 		return false;
 	}
-	//we don't actually need to pass a bool into CanPieceMove because this function
-	//is only called after we've confirmed the piece belongs to the player
 	string startIdentity = *GetTilePointer(startpos);
 	string endIdentity = *GetTilePointer(endpos);
 	char endIdentityColour = endIdentity[0];
@@ -325,6 +323,28 @@ bool Board::CanPieceMove(string startpos, string endpos)
 		{
 			moves = SortPawnOut(startpos, endpos);
 		}
+
+		else if(startIdentity[1] == king)
+		{
+			string castling = DoesKingWantToCastle(startpos, endpos);
+			if (castling.size() == 0)
+			{
+				moves = piece->PossibleMoves(endpos);
+			}
+			else
+			{
+				bool castleValid = CanKingCastle(startpos, endpos);
+				if (castleValid)
+				{
+					return true;
+				}
+				else
+				{
+					cout << "you can't castle like that now" << endl;
+					return false;
+				}
+			}
+		}
 		else
 		{
 			moves = piece->PossibleMoves(endpos);
@@ -332,6 +352,13 @@ bool Board::CanPieceMove(string startpos, string endpos)
 		//check possible should be moved to inside the different piece classes so it can account for stuff like pawns
 		bool possible = CheckPossible(moves, endpos);
 		//bool possible = piece->CheckMoveAllowed(extraInfo, endpos)
+
+
+		if (!possible)
+		{
+			cout << "The piece you selected can't move there" << endl;
+			return false;
+		}
 
 		bool clearpath;
 
@@ -345,17 +372,13 @@ bool Board::CanPieceMove(string startpos, string endpos)
 		}
 
 
-		if (!possible)
-		{
-			cout << "The piece you selected can't move there" << endl;
-			return false;
-		}
-		else if (possible && !clearpath)
+
+		if (!clearpath)
 		{
 			cout << "There's a piece in the way!" << endl;
 			return false;
 		}
-		else if (possible && clearpath)
+		else
 		{
 			return true;
 		}
@@ -369,12 +392,53 @@ bool Board::CanPieceMove(string startpos, string endpos)
 
 void Board::MovePiece(string startpos, string endpos)
 {
+	
 	string startIdentity = *GetTilePointer(startpos);
 	string endIdentity = *GetTilePointer(endpos);
 	
 	Player* startPlayer = GetPlayer(startIdentity);
+
 	Piece* startPiece = startPlayer->GetPiece(startIdentity);
 	
+	string castling = DoesKingWantToCastle(startpos, endpos);
+	if (castling.size() != 0)
+	{
+		startPiece->pos.SetPosition(endpos);
+		startPiece->HasIndeedMoved();
+		SetTile(startIdentity, endpos);
+		ClearTile(startpos);
+		Piece* rook = startPlayer->GetPiece(castling);
+		
+		string rookStart = rook->pos.GetCoordinatesNotation();
+		if (endpos == "c1")
+		{
+			SetTile(castling, "d1");
+			rook->pos.SetPosition("d1");
+		}
+		else if (endpos == "g1")
+		{
+			SetTile(castling, "f1");
+			rook->pos.SetPosition("f1");
+		}
+		else if (endpos == "c8")
+		{
+			SetTile(castling, "d8");
+			rook->pos.SetPosition("d8");
+		}
+		else if (endpos == "g8")
+		{
+			SetTile(castling, "f8");
+			rook->pos.SetPosition("f8");
+		}
+		else
+		{
+			//CASTLE ERROR
+		}
+		rook->HasIndeedMoved();
+		ClearTile(rookStart);
+
+		return;
+	}
 
 	
 	if (endIdentity != " ")
@@ -391,6 +455,18 @@ void Board::MovePiece(string startpos, string endpos)
 	}
 	SetTile(startIdentity, endpos);
 	ClearTile(startpos);
+
+
+	char playerColour = startPlayer->GetPlayerColour();
+	int currentRow = CharToInt(endpos[1]);
+	if (startIdentity[1] == pawn && playerColour == white && currentRow == 8)
+	{
+		Promotion(startPlayer, endpos);
+	}
+	else if (startIdentity[1] == pawn && playerColour == black && currentRow == 1)
+	{
+		Promotion(startPlayer, endpos);
+	}
 	return;
 }
 
@@ -411,7 +487,7 @@ bool Board::CheckPossible(vector<string> moves, string endpos)
 
 bool Board::CheckClearPath(vector<string> moves, string endpos)
 {
-	//find a way to make an exception for the knight
+
 	for (int i = 0; i < moves.size(); i++)
 	{
 		if (moves[i] == endpos)
@@ -434,13 +510,6 @@ bool Board::CheckClearPath(vector<string> moves, string endpos)
 
 	return true;
 }
-
-
-//this is the ugliest block of code I've written in ages so let me add some comments to try and explain the damn
-//thing
-
-
-
 
 //should likely be boolian argument
 bool Board::CanKingMove(bool currentPlayer)
@@ -475,6 +544,8 @@ bool Board::CanKingMove(bool currentPlayer)
 		vector < string > tileAttackedVector = IsTileAttacked(currentPlayer, currentTile, attacked);
 
 		bool isCurrentTileAttacked;
+		
+
 		if (tileAttackedVector.size() != 0)
 		{
 			isCurrentTileAttacked = true;
@@ -484,9 +555,16 @@ bool Board::CanKingMove(bool currentPlayer)
 			isCurrentTileAttacked = false;
 		}
 
+		bool isKingChecked = wouldKingBeInCheck(currentPlayer, location, moves[i]);
+
 		if (currentTileIdentity == " " || currentTileColour != kingColour)
 		{
-			if (isCurrentTileAttacked)
+			//if (isCurrentTileAttacked)
+			//{
+			//	blockedCounter++;
+			//}
+			//else 
+			if(isKingChecked)
 			{
 				blockedCounter++;
 			}
@@ -611,7 +689,7 @@ bool Board::isCheckMate(bool currentPlayer)
 				if (GetMeOneAttackerID(attackInfo) == knight)
 				{
 					string attackerPos = GetMeOneAttackerPos(attackInfo);
-					bool killAttempt = canIKill(currentPlayer, attackerPos);
+					bool killAttempt = CanIKill(currentPlayer, attackerPos);
 
 					if (killAttempt)
 					{
@@ -625,7 +703,7 @@ bool Board::isCheckMate(bool currentPlayer)
 				//else check if the final piece can be killed or blocked
 				//if not it's a win for the other team
 				string attackerPos = GetMeOneAttackerPos(attackInfo);
-				bool killAttempt = canIKill(currentPlayer, attackerPos);
+				bool killAttempt = CanIKill(currentPlayer, attackerPos);
 			
 				if (killAttempt)
 				{
@@ -750,7 +828,7 @@ int Board::NumberOfAttacks(vector<string> attackInfo)
 		}
 		else if (currentString.size() == 2)
 		{
-			if (currentString[1] == queen || currentString[1] == king)
+			if (currentString[1] == king)
 			{
 				number++;
 			}
@@ -770,6 +848,13 @@ char Board::GetMeOneAttackerID(vector<string> attackInfo)
 		if (currentString.size() == 3)
 		{
 			attacker = currentString[1];
+		}
+		else if (currentString.size() == 2)
+		{
+			if (currentString[1] == king)
+			{
+				attacker = currentString[1];
+			}
 		}
 	}
 
@@ -819,7 +904,7 @@ vector<string> Board::GetMePathToBlock(vector<string> attackInfo)
 	return posList;
 }
 
-bool Board::canIKill(bool currentPlayer, string attackerPos)
+bool Board::CanIKill(bool currentPlayer, string attackerPos)
 
 {
 	vector<string> killAttempt = IsTileAttacked(!currentPlayer, attackerPos, attacked);
@@ -853,7 +938,6 @@ bool Board::CanIBlock(bool currentPlayer, vector<string> attackerInfo)
 		vector<string> isTileBlockable = IsTileAttacked(!currentPlayer, pathToBlock[i], blockable);
 		if (isTileBlockable.size() != 0)
 		{
-			//don't do any calculation basically
 			vector<string> myBlockers = GetMeAllAttackerPos(isTileBlockable);
 			for (int j = 0; j < myBlockers.size(); j++)
 			{
@@ -870,9 +954,195 @@ bool Board::CanIBlock(bool currentPlayer, vector<string> attackerInfo)
 }
 
 
+void Board::Promotion(Player* player, string location)
+{
+	Piece* piece = GetPieceFromLocation(location);
+	piece->SetEaten();
+	SetTile(" ", location);
+	player->MakeQueen(location);
+	int index = player->Queens.size() - 1;
+	string id = player->Queens[index].GetIdentity();
+	SetTile(id, location);  
+}
 
+string Board::DoesKingWantToCastle(string startpos, string endpos)
+{
+	Piece* piece = GetPieceFromLocation(startpos);
+	string id = piece->GetIdentity();
+	char colour = id[0];
+	
+	
+	if (colour == white)
+	{
+		if (endpos == "c1") 
+		{
+			return "wr0";
+		}
+		else if (endpos == "g1")
+		{
+			return "wr1";
+		}
+	}
+	else
+	{
+		if (endpos == "c8")
+		{
+			return "br0";
+		}
+		else if (endpos == "g8")
+		{
+			return "br1";
+		}
+	}
+	return "";
+}
 
+bool Board::AreCastlingSquaresEmpty(string startpos, string endpos)
+{
+	string square1;
+	string square2;
+	string square3 = " ";
+	if (startpos == "e1" && endpos == "c1")
+	{
+		square1 = GetTileIdentity("d1");
+		square2 = GetTileIdentity(endpos);
+		square3 = GetTileIdentity("b1");
+		if (square1 != " " || square2 != " " || square3 != " ")
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	else if (startpos == "e1" && endpos == "g1")
+	{
+		square1 = GetTileIdentity("f1");
+		square2 = GetTileIdentity(endpos);
+		if (square1 != " " || square2 != " " || square3 != " ")
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	else if (startpos == "e8" && endpos == "c8")
+	{
+		square1 = GetTileIdentity("d8");
+		square2 = GetTileIdentity(endpos);
+		square3 = GetTileIdentity("b8");
+		if (square1 != " " || square2 != " " || square3 != " ")
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	else if (startpos == "e8" && endpos == "g8")
+	{
+		square1 = GetTileIdentity("f8");
+		square2 = GetTileIdentity(endpos);
+		if (square1 != " " || square2 != " ")
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+}
+bool Board::CanKingCastle(string startpos, string endpos)
+{
+	Piece* king = GetPieceFromLocation(startpos);
+	string id = king->GetIdentity();
+	Player* player = GetPlayer(id);
+	bool currentPlayer;
+	char colour = player->GetPlayerColour();
+	if (colour == white)
+	{
+		currentPlayer = true;
+	}
+	else
+	{
+		currentPlayer = false;
+	}
+	bool clearPath = AreCastlingSquaresEmpty(startpos, endpos);
+	if (!clearPath)
+	{
+		return false;
+	}
+	bool check = isKingInCheck(currentPlayer);
+	if (check)
+	{
+		return false;
+	}
+	bool kingMoved = king->GetHasMoved();
+	if (kingMoved)
+	{
+		return false;
+	}
+	char castleDirection = endpos[0];
+	string middleSquare;
+	Piece* rook;
 
+	if (castleDirection == 'c')
+	{
+		if (colour == white)
+		{
+			rook = player->GetPiece("wr0");
+			middleSquare = "d1";
+		}
+		else
+		{
+			rook = player->GetPiece("br0");
+			middleSquare = "d8";
+		}
+	}
+	else if (castleDirection == 'g')
+	{
+		if (colour == white)
+		{
+			rook = player->GetPiece("wr1");
+			middleSquare = "f1"; 
+		}
+		else
+		{
+			rook = player->GetPiece("br1");
+			middleSquare = "f8";
+		}
+	}
+	else
+	{
+		//CASTLE ERROR
+		rook = nullptr;
+	}
+
+	bool rookMoved = rook->GetHasMoved();
+	if (rookMoved)
+	{
+		return false;
+	}
+
+	vector <string> middleAttacked = IsTileAttacked(currentPlayer, middleSquare, attacked);
+	if (middleAttacked.size() != 0)
+	{
+		return false;
+	}
+
+	vector <string> endAttacked = IsTileAttacked(currentPlayer, endpos, attacked);
+	if (endAttacked.size() != 0)
+	{
+		return false;
+	}
+
+	return true;
+}
 
 
 

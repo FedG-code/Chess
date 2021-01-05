@@ -5,7 +5,7 @@ using namespace std;
 
 Board::Board()
 {
-
+	m_PieceEatenCB = Player::PieceEaten;
 }
    
 void Board::DrawTile(string location)
@@ -446,6 +446,7 @@ void Board::MovePiece(string startpos, string endpos)
 		Player* endPlayer = GetPlayer(endIdentity);
 		Piece* endPiece = endPlayer->GetPiece(endIdentity);
 		startPlayer->EatPiece(endPiece);
+		(*m_PieceEatenCB)(startPlayer, startPiece, endPlayer, endPiece);
 	}
 
 	startPiece->pos.SetPosition(endpos);

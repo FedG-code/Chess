@@ -24,6 +24,8 @@ static bool attacked = true;
 static bool blockable = false;
 const char emptytile = ' ';
 
+typedef void (*OnPieceEatenCB)(Player* attackerPlayer, Piece* attacker, Player* targetPlayer, Piece* target);
+
 class Board
 {
 	static const int m_rows = 8;
@@ -107,5 +109,6 @@ public:
 
 	vector<string> SortPawnOut(string startpos, string endpos);
 
+	OnPieceEatenCB m_PieceEatenCB = nullptr;
 
 };

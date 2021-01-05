@@ -9,6 +9,8 @@
 
 static const int PawnNum = 8;
 static const int PieceArrayNum = 2;
+
+
 class Player
 {
 	char m_PlayerColour;
@@ -47,4 +49,10 @@ public:
 	//GetPawn and other get functions for all the objects.
 	//Make code in Board that passes an enum identifier (look at position for reference on the enum)
 	//skeptical of the logic of these comments
+
+	static void PieceEaten(Player* attackerPlayer, Piece* attacker, Player* targetPlayer, Piece* target)
+	{
+		cout << "PieceEaten" << endl;
+	}
 };
+

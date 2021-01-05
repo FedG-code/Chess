@@ -1,8 +1,6 @@
 ﻿  Board.cpp
-C:\Users\feder\source\repos\Chess\Chess\Board.cpp(537,42): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\feder\source\repos\Chess\Chess\Board.cpp(866,36): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\feder\source\repos\Chess\Chess\Board.cpp(963,39): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-  Pawn.cpp
-  Generating Code...
-C:\Users\feder\source\repos\Chess\Chess\Board.cpp(1059): warning C4715: 'Board::AreCastlingSquaresEmpty': not all control paths return a value
-  Chess.vcxproj -> C:\Users\feder\source\repos\Chess\x64\Debug\Chess.exe
+C:\Users\feder\source\repos\FedG-code\Chess\Chess\Board.cpp(538,42): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\feder\source\repos\FedG-code\Chess\Chess\Board.cpp(867,36): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\feder\source\repos\FedG-code\Chess\Chess\Board.cpp(964,39): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\feder\source\repos\FedG-code\Chess\Chess\Board.cpp(1060): warning C4715: 'Board::AreCastlingSquaresEmpty': not all control paths return a value
+  Chess.vcxproj -> C:\Users\feder\source\repos\FedG-code\Chess\x64\Debug\Chess.exe

@@ -235,6 +235,26 @@ static const string black_pawn_5 = "bp5";
 static const string black_pawn_6 = "bp6";
 static const string black_pawn_7 = "bp7";
 
+enum class EPiece{
+	King,
+	Rook,
+	Knight,
+	Knight2,
+	Bishop,
+	Bishop2,
+	Knight,
+	Bishop,
+	Queen,
+	Pawn,
+	Count
+};
+
+static const string black_pieces = { "bk","bk0" };
+for (int i = 0; i < EPiece::Count; ++i)
+{
+
+}
+black_pieces[EPiece::King]
 static const string black_knight = "bk";
 static const string black_knight_0 = "bk0";
 static const string black_knight_1 = "bk1";
